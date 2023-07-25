@@ -101,8 +101,9 @@ const CoinDetails = () => {
               <Box w={"full"} p={"4"}>
                 <Item title={"Max Supply"} value={coin.market_data.max_supply}/>
                 <Item title={"Circulating Supply"} value={coin.market_data.circulating_supply}/>
+                <Item title={"All Time Low"} value={`${currencySymbol}${coin.market_data.atl[currency]}`}/>
+                <Item title={"All Time High"} value={`${currencySymbol}${coin.market_data.ath[currency]}`}/>
               </Box>
-
 
             </VStack>
           </>
