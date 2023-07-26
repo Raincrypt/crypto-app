@@ -1,11 +1,11 @@
 {
   "files": {
-    "main.js": "/react/static/js/main.ff079f9c.js",
-    "static/media/crypto_home.png": "/react/static/media/crypto_home.7f725638a475c58d70f1.png",
-    "index.html": "/react/index.html",
-    "main.ff079f9c.js.map": "/react/static/js/main.ff079f9c.js.map"
+    "main.js": "/react2/static/js/main.f061e78f.js",
+    "static/media/crypto_home.png": "/react2/static/media/crypto_home.7f725638a475c58d70f1.png",
+    "index.html": "/react2/index.html",
+    "main.f061e78f.js.map": "/react2/static/js/main.f061e78f.js.map"
   },
   "entrypoints": [
-    "static/js/main.ff079f9c.js"
+    "static/js/main.f061e78f.js"
   ]
 }
