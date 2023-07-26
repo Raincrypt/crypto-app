@@ -5,7 +5,7 @@ const CustomVar = ({high, low}) => {
   return (
     <VStack w={"full"}>
         <Progress value={50} colorScheme='teal' w={"full"}/>
-        <HStack>
+        <HStack justifyContent={"space-between"} w={"full"}>
             <Badge children={low} colorScheme='red'/>
             <Text>24 Hour Range</Text>
             <Badge children={high} colorScheme='green'/>

@@ -23,7 +23,7 @@ function App() {
         <Route path="/coin/:id" element={<CoinDetails/>}/>
       </Routes>
       
-      {/* <Footer/> */}
+      <Footer/>
     
     </Router>
   );
