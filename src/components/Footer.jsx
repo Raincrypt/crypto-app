@@ -23,7 +23,7 @@ const Footer = () => {
             textAlign={["center", "left"]}
           >
             We are the best crypto trading app in India, we provide our guidance
-            absolutely for <b>free</b>.
+            absolutely for <b>FREE</b>.
           </Text>
         </VStack>
 
