@@ -7,10 +7,10 @@ import HomeImage from "../assets/crypto_home.png"
 const Home = () => {
   return (
     <Box
-      bgColor={"blackAlpha.900"} w={"full"} h={"85vh"}
+      bgColor={"blackAlpha.900"} w={"full"} 
     >
       <motion.div style={{
-          height: "80vh",
+          height: "68vh",
           }}
           animate={{
             translateY: "50px",
