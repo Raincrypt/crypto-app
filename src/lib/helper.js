@@ -8,3 +8,14 @@ export const debounce = (cb, wait, ...args) => {
     }, wait);
   };
 };
+
+export const throttle = (cb, wait) => {
+  let last = 0;
+
+  return function (...args) {
+    let now = new Date().getTime();
+    if (now - last < wait) return;
+    last = now;
+    return cb(...args);
+  };
+};

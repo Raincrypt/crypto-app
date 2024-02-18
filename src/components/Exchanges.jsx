@@ -1,34 +1,17 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-
-import { server } from "../index";
 import { Container, HStack } from "@chakra-ui/react";
+import React, { useState } from "react";
 
-import Loader from "./Loader";
+import { debounce } from "../lib/helper.js";
+import { useExchanges } from "../lib/hooks.js";
 import ErrorComponent from "./ErrorComponent.jsx";
 import ExchangeCard from "./ExchangeCard";
+import Loader from "./Loader";
 import SearchBar from "./SearchBar.jsx";
-import { debounce } from "../lib/helper.js";
 
 const Exchanges = () => {
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-  const [exchanges, setExchanges] = useState([]);
   const [input, setInput] = useState("");
 
-  useEffect(() => {
-    const fetchExchanges = async () => {
-      try {
-        const { data } = await axios.get(`${server}/exchanges`);
-        setExchanges(data);
-        setLoading(false);
-      } catch (error) {
-        setError(true);
-        setLoading(false);
-      }
-    };
-    fetchExchanges();
-  }, []);
+  const {error, exchanges, loading} = useExchanges();
 
   const searchFunction = async (e) => {
     setInput(e.target.value);
@@ -37,14 +20,14 @@ const Exchanges = () => {
   if (error) return <ErrorComponent message="Error While Fetching Exchanges" />;
 
   return (
-    <Container maxW={"container.xl"}>
+    <Container maxW={"container.xl"} minHeight={"100vh"} paddingBottom={"2rem"}>
       {loading ? (
         <Loader />
       ) : (
         <>
           <HStack justifyContent="flex-start" border={"red"} p={"1rem"}>
             <SearchBar
-              onKeyDown={debounce(searchFunction, 500)}
+              onKeyDown={debounce(searchFunction, 800)}
               placeholder="Search for an exchange"
             />
           </HStack>

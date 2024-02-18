@@ -1,14 +1,21 @@
-import React, { useEffect, useState } from "react";
 import axios from "axios";
+import React, { useEffect, useMemo, useState } from "react";
 
-import { server } from "../index";
-import { Button, Container, HStack, Radio, RadioGroup } from "@chakra-ui/react";
+import {
+  Box,
+  Container,
+  HStack,
+  Radio,
+  RadioGroup
+} from "@chakra-ui/react";
+import { server, totalPages } from "../lib/constants.js";
 
-import Loader from "./Loader";
-import ErrorComponent from "./ErrorComponent.jsx";
-import CoinsCard from "./CoinsCard";
-import SearchBar from "./SearchBar.jsx";
 import { debounce } from "../lib/helper.js";
+import CoinsCard from "./CoinsCard";
+import ErrorComponent from "./ErrorComponent.jsx";
+import Loader from "./Loader";
+import PaginationButton from "./PaginationButton.jsx";
+import SearchBar from "./SearchBar.jsx";
 
 const Coins = () => {
   const [loading, setLoading] = useState(true);
@@ -21,14 +28,15 @@ const Coins = () => {
   const currencySymbol =
     currency === "inr" ? "₹" : currency === "eur" ? "€" : "$";
 
-  const changePage = (page) => {
-    setPage(page);
-    setLoading(true);
+  const nextPage = () => {
+    setPage((prev) => prev + 1);
   };
-  const btns = new Array(132).fill(1);
+  const prevPage = () => {
+    setPage((prev) => prev - 1);
+  };
 
-  useEffect(() => {
-    const fetchCoins = async () => {
+  const fetchCoins = useMemo(
+    () => async () => {
       try {
         const { data } = await axios.get(
           `${server}/coins/markets?vs_currency=${currency}&page=${page}`
@@ -39,9 +47,13 @@ const Coins = () => {
         setError(true);
         setLoading(false);
       }
-    };
+    },
+    [currency, page]
+  );
+
+  useEffect(() => {
     fetchCoins();
-  }, [currency, page]);
+  }, [fetchCoins]);
 
   const searchFunction = async (e) => {
     setInput(e.target.value);
@@ -50,13 +62,20 @@ const Coins = () => {
   if (error) return <ErrorComponent message="Error While Fetching Coins" />;
 
   return (
-    <Container maxW={"container.xl"} justifyContent={"space-between"}>
+    <Container
+      maxW={"container.xl"}
+      justifyContent={"space-between"}
+      minHeight={"100vh"}
+    >
       {loading ? (
         <Loader />
       ) : (
         <>
           <HStack justifyContent="space-between">
-            <SearchBar placeholder="Search for coins" onKeyDown={debounce(searchFunction, 500)}/>
+            <SearchBar
+              placeholder="Search for coins"
+              onKeyDown={debounce(searchFunction, 800)}
+            />
             <RadioGroup value={currency} onChange={setCurrency} p={"8"}>
               <HStack spacing={"4"}>
                 <Radio value="inr">INR (₹)</Radio>
@@ -67,34 +86,80 @@ const Coins = () => {
           </HStack>
 
           <HStack wrap={"wrap"} justifyContent={"space-evenly"}>
-            {coins.filter((i) =>
+            {coins
+              .filter((i) =>
                 input === ""
                   ? i
                   : i.name.toLowerCase().includes(input.toLowerCase())
-              ).map((i) => (
-              <CoinsCard
-                id={i.id}
-                key={i.id}
-                name={i.name}
-                image={i.image}
-                price={i.current_price}
-                symbol={i.symbol}
-                currencySymbol={currencySymbol}
-              />
-            ))}
+              )
+              .map((i) => (
+                <CoinsCard
+                  id={i.id}
+                  key={i.id}
+                  name={i.name}
+                  image={i.image}
+                  price={i.current_price}
+                  symbol={i.symbol}
+                  currencySymbol={currencySymbol}
+                />
+              ))}
           </HStack>
 
-          <HStack width={"full"} overflowX={"auto"} p={"8"}>
-            {btns.map((item, index) => (
-              <Button
-                key={index}
-                bgColor={"blackAlpha.900"}
-                color={"white"}
-                onClick={() => changePage(index + 1)}
+          <HStack w={"100%"} p={"2"} justifyContent={"center"}>
+            <HStack p={"8"} w={"fit-content"}>
+              {page !== 1 && (
+                <PaginationButton text="prev" onClick={prevPage} />
+              )}
+
+              {page > 2 && (
+                <PaginationButton
+                  text={page - 2}
+                  onClick={() => {
+                    setPage((prev) => prev - 2);
+                  }}
+                />
+              )}
+              {page > 1 && (
+                <PaginationButton
+                  text={page - 1}
+                  onClick={() => {
+                    setPage((prev) => prev - 1);
+                  }}
+                />
+              )}
+
+              {/* Current Page */}
+              <Box
+                paddingBlock={"2"}
+                paddingInline={"4"}
+                borderRadius="md"
+                bgColor={"blackAlpha.500"}
+                color={"yellow"}
               >
-                {index + 1}
-              </Button>
-            ))}
+                {page}
+              </Box>
+
+              {page < totalPages - 1 && (
+                <PaginationButton
+                  text={page + 1}
+                  onClick={() => {
+                    setPage((prev) => prev + 1);
+                  }}
+                />
+              )}
+              {page < totalPages - 2 && (
+                <PaginationButton
+                  text={page + 2}
+                  onClick={() => {
+                    setPage((prev) => prev + 2);
+                  }}
+                />
+              )}
+
+              {page !== totalPages && (
+                <PaginationButton text="next" onClick={nextPage} />
+              )}
+            </HStack>
           </HStack>
         </>
       )}
